@@ -30,7 +30,8 @@ import java.util.List;
 
 @TeleOp(name="Auto_Util", group="abstract")
 @Disabled
-public abstract class Auto_Util extends LinearOpMode {
+public abstract class
+Auto_Util extends LinearOpMode {
     /*
     ___________________________________________________________________________________________________________________________________
     -
@@ -468,7 +469,7 @@ public abstract class Auto_Util extends LinearOpMode {
             sleep(100);
         }
     }
-
+/*
     public void encoderLift(double speed, double liftInches,  double timeoutS, double desiredHeading){
         int heightTarget;
         //int averageTarget;
@@ -496,6 +497,8 @@ public abstract class Auto_Util extends LinearOpMode {
             slideMotor.setPower((liftSpeed));
             slideMotor2.setPower((liftSpeed * -1));
 
+ */
+/*
 
 
             //prints the desired position and actual position of all four motors
@@ -521,7 +524,7 @@ public abstract class Auto_Util extends LinearOpMode {
             slideMotor2.setPower(0);
             sleep(100);
         }
-    }
+    }*/
 
     public void resetMotorEncoders() {
         leftfrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -534,7 +537,7 @@ public abstract class Auto_Util extends LinearOpMode {
         rightbackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightfrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-
+/*
     public void resetSlideEncoders() {
         try {
             slideMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -548,7 +551,7 @@ public abstract class Auto_Util extends LinearOpMode {
                 telemetry.update();
             }
         }
-    }
+    }*/
 
     /*
     ___________________________________________________________________________________________________________________________________
@@ -1146,7 +1149,7 @@ public abstract class Auto_Util extends LinearOpMode {
         leftbackDrive.setPower(0);
     }
 
-
+/*
     public void slideLift(double time){
         runtime.reset();
         while(runtime.seconds() < time){
@@ -1165,7 +1168,7 @@ public abstract class Auto_Util extends LinearOpMode {
         }
         slideMotor.setPower(0);
         slideMotor.setPower(0);
-    }
+    }*/
 
 
 
