@@ -27,7 +27,7 @@ public class practicehwwmap extends HardwareMapUtil{
 
     public void init(HardwareMap ahwMap){
         hwMap=ahwMap;
-        leftfrontDrive = HardwareInitMotor("IfD", true);
+        leftfrontDrive = HardwareInitMotor("lfD", true);
         rightfrontDrive = HardwareInitMotor("rfD", false);
         leftbackDrive = HardwareInitMotor("lbD", true);
         rightbackDrive = HardwareInitMotor("rbD", false);
