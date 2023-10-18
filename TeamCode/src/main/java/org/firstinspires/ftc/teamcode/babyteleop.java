@@ -1,18 +1,12 @@
 package org.firstinspires.ftc.teamcode;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
-@TeleOp(name="cheezit", group="Pushbot")
-public class cheeezit extends Auto_Util {
-    cheeezithwmap robot=new cheeezithwmap();
+@TeleOp(name="baby teleop", group="Pushbot")
+public class babyteleop extends Auto_Util {
+    babyhwmap robot=new babyhwmap();
 
     private ElapsedTime runtime = new ElapsedTime();
 
