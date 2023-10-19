@@ -17,7 +17,7 @@ public class babyteleop extends Auto_Util {
     static double lfPower;
     static double rbPower;
     static double rfPower;
-    static double slowamount = 1;
+    static double slowamount ;
 
     public void runOpMode(){
         robot.init(hardwareMap);
@@ -32,25 +32,30 @@ public class babyteleop extends Auto_Util {
 
             fwdBackPower = gamepad1.left_stick_y;
             strafePower = gamepad1.left_stick_x;
-            turnPower= gamepad1.right_stick_x;
+            turnPower = gamepad1.right_stick_x;
 
-            lfPower = (fwdBackPower - turnPower - strafePower);
-            rfPower = (fwdBackPower + turnPower + strafePower);
-            lbPower = (fwdBackPower - turnPower + strafePower);
-            rbPower = (fwdBackPower + turnPower - strafePower);
+            lfPower = (fwdBackPower - turnPower - strafePower) * slowamount;
+            rfPower = (fwdBackPower + turnPower + strafePower) * slowamount;
+            lbPower = (fwdBackPower - turnPower + strafePower) * slowamount;
+            rbPower = (fwdBackPower + turnPower - strafePower) * slowamount;
 
-            robot.leftfrontDrive.setPower(lfPower*slowamount);
-            robot.leftbackDrive.setPower(lbPower*slowamount);
-            robot.rightfrontDrive.setPower(rfPower*slowamount);
-            robot.rightbackDrive.setPower(rbPower*slowamount);
+            robot.leftfrontDrive.setPower(lfPower);
+            robot.leftbackDrive.setPower(lbPower);
+            robot.rightfrontDrive.setPower(rfPower);
+            robot.rightbackDrive.setPower(rbPower);
 
-            if(gamepad1.right_bumper){
-                slowamount=0.5;
-            }  else{
-                slowamount=1;
+            if (gamepad1.right_bumper){
+                slowamount = 0.5;
+            } else if(gamepad1.left_bumper) {
+                slowamount = 0.1;
+            }else{
+                slowamount = 1;
             }
+            telemetry.addData("LFpwr", lfPower);
+            telemetry.addData("gamepad left stick x", gamepad1.left_stick_x);
+            telemetry.addData("gamepad left stick y", gamepad1.left_stick_y);
 
-            if(gamepad1.dpad_up){
+         /*   if(gamepad1.dpad_up){
                 robot.leftfrontDrive.setPower(1);
             }
             if(gamepad1.dpad_right){
@@ -61,7 +66,7 @@ public class babyteleop extends Auto_Util {
             }
             if(gamepad1.dpad_left){
                 robot.rightbackDrive.setPower(1);
-            }
+            }*/
 
         }
 
