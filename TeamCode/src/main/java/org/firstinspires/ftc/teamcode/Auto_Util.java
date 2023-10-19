@@ -29,6 +29,8 @@ import org.firstinspires.ftc.robotcore.internal.collections.EvictingBlockingQueu
 
 import java.util.List;
 
+import org.firstinspires.ftc.teamcode.odometry.*;
+
 @TeleOp(name="Auto_Util", group="abstract")
 @Disabled
 public abstract class Auto_Util extends LinearOpMode {
@@ -172,15 +174,15 @@ public abstract class Auto_Util extends LinearOpMode {
      */
     public void initAuto() {
         initDriveHardwareMap(rfName, rbName, lfName, lbName);
-       // initUtilHardwareMap(util1name, util2name);
+        // initUtilHardwareMap(util1name, util2name);
         //initServoHardwareMap(intakeServoname);
         //IMU Stuff, sets up parameters and reports accelerations to logcat log
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmodeaz
-     //   imu = hardwareMap.get(BNO055IMU.class, "imu");
-       // imu.initialize(parameters);
+        //   imu = hardwareMap.get(BNO055IMU.class, "imu");
+        // imu.initialize(parameters);
 
         //Used in Color Alignment
         /*
@@ -229,6 +231,41 @@ public abstract class Auto_Util extends LinearOpMode {
         leftbackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         leftbackDrive.setDirection(DcMotor.Direction.REVERSE);
         leftbackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    private void initDriveHardwareMap(String rfName, String rbName, String lfName, String lbName, String vlEncoderName, String vrEncoderName, String hEncoderName) {
+        rightfrontDrive = hardwareMap.dcMotor.get(rfName);
+        rightfrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightbackDrive = hardwareMap.dcMotor.get(rbName);
+        rightbackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftfrontDrive = hardwareMap.dcMotor.get(lfName);
+        leftfrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftbackDrive = hardwareMap.dcMotor.get(lbName);
+        leftbackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        rightfrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightfrontDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightfrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        rightbackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightbackDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightbackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftfrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftfrontDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftfrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftbackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftbackDrive.setDirection(DcMotor.Direction.REVERSE);
+        leftbackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        // Odometry Setup
+        verticalLeft = (DcMotorEx) hardwareMap.dcMotor.get(vlEncoderName);
+        verticalRight = (DcMotorEx) hardwareMap.dcMotor.get(vrEncoderName);
+        horizontal = (DcMotorEx) hardwareMap.dcMotor.get(hEncoderName);
+        verticalLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        verticalRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        horizontal.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        verticalLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        verticalRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        horizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     private void initUtilHardwareMap(String slide1, String slide2) {
@@ -1153,7 +1190,7 @@ public abstract class Auto_Util extends LinearOpMode {
         leftfrontDrive.setPower(0);
         leftbackDrive.setPower(0);
     }
-}
+
 
 /*
     public void slideLift(double time){
@@ -1353,11 +1390,11 @@ ________________________________________________________________________________
 ___________________________________________________________________________________________________________________________________
  */
 //why
-/*
-OdometryGlobalCoordinatePosition globalPositionUpdate;
-final double ODOMETRY_COUNTS_PER_INCH = 307.699557;
 
-public void initOdometry(){
+    OdometryGlobalCoordinatePosition globalPositionUpdate;
+    final double ODOMETRY_COUNTS_PER_INCH = 307.699557;
+
+    public void initOdometry() {
         //Initialize hardware map values.
         initDriveHardwareMap(rfName, rbName, lfName, lbName, verticalLeftEncoderName, verticalRightEncoderName, horizontalEncoderName);
         //Create and start GlobalCoordinatePosition thread to constantly update the global coordinate positions
@@ -1369,7 +1406,7 @@ public void initOdometry(){
         globalPositionUpdate.reverseNormalEncoder();
         globalPositionUpdate.reverseLeftEncoder();
     }
-
+/*
 //THIS WOULD GO IN INITITIALIZE DRIVEBASE HARDWARE MAP
         verticalLeft = hardwareMap.dcMotor.get(vlEncoderName);
         verticalRight = hardwareMap.dcMotor.get(vrEncoderName);
@@ -1412,3 +1449,4 @@ right front motor = 3
 
      String verticalLeftEncoderName = lbName, verticalRightEncoderName = lfName, horizontalEncoderName = rfName;
      */
+}
