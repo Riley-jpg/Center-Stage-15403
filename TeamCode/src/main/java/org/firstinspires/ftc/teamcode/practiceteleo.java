@@ -47,6 +47,8 @@ static double lAPower;
             lbPower = (fwdBackPower-turnPower+strafePower);
             rbPower = (fwdBackPower+turnPower-strafePower);
 
+            robot.linearActuator.setPower(lAPower);
+
         }
 
 

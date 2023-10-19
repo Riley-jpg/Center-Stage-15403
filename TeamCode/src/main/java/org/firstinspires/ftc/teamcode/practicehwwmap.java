@@ -23,6 +23,9 @@ public class practicehwwmap extends HardwareMapUtil{
 
 
     public CRServo theServo = null;
+    public CRServo getTheServo(){
+        return theServo;
+    }
 
 
     public void init(HardwareMap ahwMap){
