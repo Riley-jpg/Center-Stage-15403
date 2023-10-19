@@ -88,7 +88,7 @@ public abstract class Auto_Util extends LinearOpMode {
     String rfName = "rfD", rbName = "rbD", lfName = "lfD", lbName = "lbD";
     String util1name = "rightSlide", util2name = "leftSlide"; //, util3name = "shootM", util4name = "wobbleG";
     String /*servo1name = "wobbleS",*/ intakeServoname = "intake"/*, crservo2name = "pastaS2"*/;
-    String verticalLeftEncoderName = lbName, verticalRightEncoderName = lfName, horizontalEncoderName = rfName;
+    String verticalLeftEncoderName = "vlEncoderName", verticalRightEncoderName = "vrEncoderName", horizontalEncoderName = "hEncoderName";
 
     //Variables for Camera
 
