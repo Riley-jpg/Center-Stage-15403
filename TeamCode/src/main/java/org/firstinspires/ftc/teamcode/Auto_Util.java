@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -30,8 +31,7 @@ import java.util.List;
 
 @TeleOp(name="Auto_Util", group="abstract")
 @Disabled
-public abstract class
-Auto_Util extends LinearOpMode {
+public abstract class Auto_Util extends LinearOpMode {
     /*
     ___________________________________________________________________________________________________________________________________
     -
@@ -46,6 +46,11 @@ Auto_Util extends LinearOpMode {
     static final double DRIVE_SPEED = 0.01;
     static final double STRAFE_SPEED = 0.01;
     static final double LIFT_SPEED = 0.7;
+
+    //Odometry
+    //static final double TRACKWIDTH;
+    //static final double TICKS_TO_INCHES;
+    //static final double CENTER_WHEEL_OFFSET;
 
     //Vision Colors
 
@@ -70,9 +75,9 @@ Auto_Util extends LinearOpMode {
     //Utility motors
     DcMotor slideMotor, slideMotor2, utilmotor3, utilmotor4;
     //odometry encoders
-    DcMotor verticalLeft, verticalRight, horizontal;
+    DcMotorEx verticalLeft, verticalRight, horizontal;
     //servos
-   // Servo servo1;
+    // Servo servo1;
     CRServo intakeServo, crservo2;
     ElapsedTime runtime = new ElapsedTime();
     BNO055IMU imu;
@@ -98,7 +103,7 @@ Auto_Util extends LinearOpMode {
     private static final String VUFORIA_KEY =
             "ATcQ9Jb/////AAABmXGJFOKC40g7kfOPBw8DjTpDq86FQe6MiHxC08OsCToNqw+fKiT29mM/lfoeeV88sikFGdia+F+WuD6Dm/Du3Ob+nWnN7gJCIwR+tO+qWxAguajBRQ2pxo7tODCvhYzof/ltTNRdFNNvSl82rRW+OLaI4/mn512YZfs3wNA0/hjZM5tUtsSHKKNigaAnY7QhSI9o8Wig8jtIbl6uKHyNiy8WYIjdJW2tfpwJa+jRskvcm2Eck6xPg1MfBHZzMefB9jYl/Sect6savpkYvRLIsfa16/rD7YDnR5vJVt7RVw+g1axFH3iYV1DlqxNRDgRvAO1HryGCABQUyS8h5hWGOu61S0ArgAqLQoFW38R0eJpg";
 
-            //"AYSaE87/////AAABmd4MI42q9kBngeU2bY+LVZJDc/gsy7wMwK3XXPjV+w2c4E3gtwueNUhCeDOIXgW1qP0yVp+ZvTxaTspl7CXq3ogA6ZUIqqLep9WvnAF5xLF7KIZOITXPRKcAPeK3O6o7gazhB0RdNpZKTavtq2TAV/D9LME20zAAZcwoSVRGzmFmnhS3TDsaWMtC+kWQDLh+cOlqB/SoTzsg07av6GLyNlz2PxkZnVhPqMHaDjeYdOrgTzT8KqG8XtC9GtC7tuBbC8+bE8zBExb2ToydJ4BLFKhG38Tms8oCNoGYUs1j3h3reNN1Obx74RtWqGSxTVcvml0mB0XsnAChPKoGt7WFzWrNLwEZ1BJ2jDkzjNYaIfow";
+    //"AYSaE87/////AAABmd4MI42q9kBngeU2bY+LVZJDc/gsy7wMwK3XXPjV+w2c4E3gtwueNUhCeDOIXgW1qP0yVp+ZvTxaTspl7CXq3ogA6ZUIqqLep9WvnAF5xLF7KIZOITXPRKcAPeK3O6o7gazhB0RdNpZKTavtq2TAV/D9LME20zAAZcwoSVRGzmFmnhS3TDsaWMtC+kWQDLh+cOlqB/SoTzsg07av6GLyNlz2PxkZnVhPqMHaDjeYdOrgTzT8KqG8XtC9GtC7tuBbC8+bE8zBExb2ToydJ4BLFKhG38Tms8oCNoGYUs1j3h3reNN1Obx74RtWqGSxTVcvml0mB0XsnAChPKoGt7WFzWrNLwEZ1BJ2jDkzjNYaIfow";
     //private VuforiaLocalizer vuforia;
     private TFObjectDetector tfod;
     //Color Sensors
@@ -150,7 +155,7 @@ Auto_Util extends LinearOpMode {
     String targetName           = "";
     private TFObjectDetector tfod;
      */
-    
+
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -427,7 +432,6 @@ Auto_Util extends LinearOpMode {
             rightfrontDrive.setPower(0.1 * (rightSpeed + PI(desiredHeading)));
             leftfrontDrive.setPower(0.1 * (leftSpeed - PI(desiredHeading)));
             leftbackDrive.setPower(0.1 * (leftSpeed - PI(desiredHeading)));
-
 
 
             //prints the desired position and actual position of all four motors
@@ -807,9 +811,11 @@ Auto_Util extends LinearOpMode {
         /** YUY2 is supported by all Webcams, per the USB Webcam standard: See "USB Device Class Definition
          * for Video Devices: Uncompressed Payload, Table 2-1". Further, often this is the *only*
          * image format supported by a camera */
-        //final int imageFormat = ImageFormat.YUY2;
+    //final int imageFormat = ImageFormat.YUY2;
 
-        /** Verify that the image is supported, and fetch size and desired frame rate if so */
+    /**
+     * Verify that the image is supported, and fetch size and desired frame rate if so
+     */
         /*
         CameraCharacteristics cameraCharacteristics = cameraName.getCameraCharacteristics();
         if (!contains(cameraCharacteristics.getAndroidFormats(), imageFormat)) {
@@ -1076,7 +1082,6 @@ Auto_Util extends LinearOpMode {
     -
     ___________________________________________________________________________________________________________________________________
      */
-
     public void setAllDriveMotors(double time) {
         runtime.reset();
         while (runtime.seconds() < time) {
@@ -1148,6 +1153,7 @@ Auto_Util extends LinearOpMode {
         leftfrontDrive.setPower(0);
         leftbackDrive.setPower(0);
     }
+}
 
 /*
     public void slideLift(double time){
@@ -1336,7 +1342,7 @@ Auto_Util extends LinearOpMode {
         telemetry.update();
     }
     */
-}
+
 
 
 /*
@@ -1346,11 +1352,11 @@ ________________________________________________________________________________
 -
 ___________________________________________________________________________________________________________________________________
  */
+/*
+OdometryGlobalCoordinatePosition globalPositionUpdate;
+final double ODOMETRY_COUNTS_PER_INCH = 307.699557;
 
-//OdometryGlobalCoordinatePosition globalPositionUpdate;
-//final double ODOMETRY_COUNTS_PER_INCH = 307.699557;
-
-/*public void initOdometry(){
+public void initOdometry(){
         //Initialize hardware map values.
         initDriveHardwareMap(rfName, rbName, lfName, lbName, verticalLeftEncoderName, verticalRightEncoderName, horizontalEncoderName);
         //Create and start GlobalCoordinatePosition thread to constantly update the global coordinate positions
@@ -1362,9 +1368,9 @@ ________________________________________________________________________________
         globalPositionUpdate.reverseNormalEncoder();
         globalPositionUpdate.reverseLeftEncoder();
     }
-     */
+
 //THIS WOULD GO IN INITITIALIZE DRIVEBASE HARDWARE MAP
-/*verticalLeft = hardwareMap.dcMotor.get(vlEncoderName);
+        verticalLeft = hardwareMap.dcMotor.get(vlEncoderName);
         verticalRight = hardwareMap.dcMotor.get(vrEncoderName);
         horizontal = hardwareMap.dcMotor.get(hEncoderName);
         verticalLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -1373,7 +1379,7 @@ ________________________________________________________________________________
         verticalLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         verticalRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         horizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-         */
+*/
 /*
 ___________________________________________________________________________________________________________________________________
 -
