@@ -44,6 +44,12 @@ public class babyteleop extends Auto_Util {
             robot.rightfrontDrive.setPower(rfPower*slowamount);
             robot.rightbackDrive.setPower(rbPower*slowamount);
 
+            if(gamepad1.right_bumper){
+                slowamount=0.5;
+            }  else{
+                slowamount=1;
+            }
+
             if(gamepad1.dpad_up){
                 robot.leftfrontDrive.setPower(1);
             }
