@@ -167,15 +167,15 @@ Auto_Util extends LinearOpMode {
      */
     public void initAuto() {
         initDriveHardwareMap(rfName, rbName, lfName, lbName);
-        initUtilHardwareMap(util1name, util2name);
-        initServoHardwareMap(intakeServoname);
+       // initUtilHardwareMap(util1name, util2name);
+        //initServoHardwareMap(intakeServoname);
         //IMU Stuff, sets up parameters and reports accelerations to logcat log
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmodeaz
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        imu.initialize(parameters);
+     //   imu = hardwareMap.get(BNO055IMU.class, "imu");
+       // imu.initialize(parameters);
 
         //Used in Color Alignment
         /*
