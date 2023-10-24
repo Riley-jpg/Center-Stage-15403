@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Programs;
 
 import android.graphics.Bitmap;
 import android.os.Handler;
@@ -11,7 +11,9 @@ import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.ReadWriteFile;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
@@ -26,10 +28,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.robotcore.internal.collections.EvictingBlockingQueue;
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
+import org.firstinspires.ftc.teamcode.odometry.OdometryGlobalCoordinatePosition;
 
+import java.io.File;
 import java.util.List;
-
-import org.firstinspires.ftc.teamcode.odometry.*;
 
 @TeleOp(name="Auto_Util", group="abstract")
 @Disabled
@@ -74,10 +77,10 @@ public abstract class Auto_Util extends LinearOpMode {
 
     //Drive motors
     DcMotor rightfrontDrive, rightbackDrive, leftfrontDrive, leftbackDrive;
+    //Odometry encoders
+    DcMotor verticalLeft, verticalRight, horizontal;
     //Utility motors
     DcMotor slideMotor, slideMotor2, utilmotor3, utilmotor4;
-    //odometry encoders
-    DcMotorEx verticalLeft, verticalRight, horizontal;
     //servos
     // Servo servo1;
     CRServo intakeServo, crservo2;
@@ -86,9 +89,9 @@ public abstract class Auto_Util extends LinearOpMode {
     static double motor_power;
     //Hardware Map Names for drive motors and odometry wheels. This may need to be changed between years if the config changes
     String rfName = "rfD", rbName = "rbD", lfName = "lfD", lbName = "lbD";
+    String verticalLeftEncoderName = rbName, verticalRightEncoderName = lfName, horizontalEncoderName = rfName;
     String util1name = "rightSlide", util2name = "leftSlide"; //, util3name = "shootM", util4name = "wobbleG";
     String /*servo1name = "wobbleS",*/ intakeServoname = "intake"/*, crservo2name = "pastaS2"*/;
-    String verticalLeftEncoderName = "vlEncoderName", verticalRightEncoderName = "vrEncoderName", horizontalEncoderName = "hEncoderName";
 
     //Variables for Camera
 
@@ -173,16 +176,16 @@ public abstract class Auto_Util extends LinearOpMode {
     ___________________________________________________________________________________________________________________________________
      */
     public void initAuto() {
-        initDriveHardwareMap(rfName, rbName, lfName, lbName);
-        // initUtilHardwareMap(util1name, util2name);
+        initDriveHardwareMap(rfName, rbName, lfName, lbName, verticalLeftEncoderName, verticalRightEncoderName, horizontalEncoderName);
+       // initUtilHardwareMap(util1name, util2name);
         //initServoHardwareMap(intakeServoname);
         //IMU Stuff, sets up parameters and reports accelerations to logcat log
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.calibrationDataFile = "BNO055IMUCalibration.json"; // see the calibration sample opmodeaz
-        //   imu = hardwareMap.get(BNO055IMU.class, "imu");
-        // imu.initialize(parameters);
+     //   imu = hardwareMap.get(BNO055IMU.class, "imu");
+       // imu.initialize(parameters);
 
         //Used in Color Alignment
         /*
@@ -209,30 +212,6 @@ public abstract class Auto_Util extends LinearOpMode {
         utilmotor4 = util4;
     }
 
-    private void initDriveHardwareMap(String rfName, String rbName, String lfName, String lbName) {
-        rightfrontDrive = hardwareMap.dcMotor.get(rfName);
-        rightfrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightbackDrive = hardwareMap.dcMotor.get(rbName);
-        rightbackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftfrontDrive = hardwareMap.dcMotor.get(lfName);
-        leftfrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftbackDrive = hardwareMap.dcMotor.get(lbName);
-        leftbackDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        rightfrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightfrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightfrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightbackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightbackDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightbackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftfrontDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftfrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftfrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        leftbackDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftbackDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftbackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-    }
-
     private void initDriveHardwareMap(String rfName, String rbName, String lfName, String lbName, String vlEncoderName, String vrEncoderName, String hEncoderName) {
         rightfrontDrive = hardwareMap.dcMotor.get(rfName);
         rightfrontDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -256,13 +235,14 @@ public abstract class Auto_Util extends LinearOpMode {
         leftbackDrive.setDirection(DcMotor.Direction.REVERSE);
         leftbackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        // Odometry Setup
-        verticalLeft = (DcMotorEx) hardwareMap.dcMotor.get(vlEncoderName);
-        verticalRight = (DcMotorEx) hardwareMap.dcMotor.get(vrEncoderName);
-        horizontal = (DcMotorEx) hardwareMap.dcMotor.get(hEncoderName);
+        verticalLeft = hardwareMap.dcMotor.get(vlEncoderName);
+        verticalRight = hardwareMap.dcMotor.get(vrEncoderName);
+        horizontal = hardwareMap.dcMotor.get(hEncoderName);
+
         verticalLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         verticalRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         horizontal.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
         verticalLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         verticalRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         horizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -1389,35 +1369,60 @@ ________________________________________________________________________________
 -
 ___________________________________________________________________________________________________________________________________
  */
-//why
+OdometryGlobalCoordinatePosition globalPositionUpdate = new OdometryGlobalCoordinatePosition(verticalLeft, verticalRight, horizontal, ENCODER_COUNTS_PER_INCH, 75);
 
-    OdometryGlobalCoordinatePosition globalPositionUpdate;
-    final double ODOMETRY_COUNTS_PER_INCH = 307.699557;
+public void goToPosition(double targetXPosition, double targetYPosition, double robotPower, double desiredRobotOrientation, double allowableDistanceError){
 
-    public void initOdometry() {
-        //Initialize hardware map values.
-        initDriveHardwareMap(rfName, rbName, lfName, lbName, verticalLeftEncoderName, verticalRightEncoderName, horizontalEncoderName);
-        //Create and start GlobalCoordinatePosition thread to constantly update the global coordinate positions
-        globalPositionUpdate = new OdometryGlobalCoordinatePosition(verticalLeft, verticalRight, horizontal, ODOMETRY_COUNTS_PER_INCH, 75);
-        Thread positionThread = new Thread(globalPositionUpdate);
-        positionThread.start();
+    double distanceToXTarget = targetXPosition - globalPositionUpdate.returnXCoordinate();
+    double distanceToYTarget = targetYPosition - globalPositionUpdate.returnYCoordinate();
 
-        globalPositionUpdate.reverseRightEncoder();
-        globalPositionUpdate.reverseNormalEncoder();
-        globalPositionUpdate.reverseLeftEncoder();
+    double distance = Math.hypot(distanceToXTarget, distanceToYTarget);
+
+
+    while(opModeIsActive() && distance > allowableDistanceError){
+
+        distanceToXTarget = targetXPosition - globalPositionUpdate.returnXCoordinate();
+        distanceToYTarget = targetYPosition - globalPositionUpdate.returnYCoordinate();
+
+        double robotMovementAngle = Math.toDegrees(Math.atan2(distanceToXTarget, distanceToYTarget));
+
+        double robot_movement_x_component = calculateX(robotMovementAngle, robotPower);
+        double robot_movement_y_component = calculateY(robotMovementAngle, robotPower);
+        double pivotCorrection = desiredRobotOrientation - globalPositionUpdate.returnOrientation();
     }
-/*
-//THIS WOULD GO IN INITITIALIZE DRIVEBASE HARDWARE MAP
-        verticalLeft = hardwareMap.dcMotor.get(vlEncoderName);
-        verticalRight = hardwareMap.dcMotor.get(vrEncoderName);
-        horizontal = hardwareMap.dcMotor.get(hEncoderName);
-        verticalLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        verticalRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        horizontal.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        verticalLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        verticalRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        horizontal.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-*/
+
+    while(opModeIsActive() && distance > allowableDistanceError){
+
+        rightbackDrive.setPower(robotPower);
+        rightfrontDrive.setPower(robotPower);
+        leftfrontDrive.setPower(robotPower);
+        leftbackDrive.setPower(robotPower);
+
+    }
+
+}
+
+    /**
+     * Calculate the power in the x direction
+     * @param desiredAngle angle on the x axis
+     * @param speed robot's speed
+     * @return the x vector
+     */
+    private double calculateX(double desiredAngle, double speed) {
+        return Math.sin(Math.toRadians(desiredAngle)) * speed;
+    }
+
+    /**
+     * Calculate the power in the y direction
+     * @param desiredAngle angle on the y axis
+     * @param speed robot's speed
+     * @return the y vector
+     */
+
+    private double calculateY(double desiredAngle, double speed) {
+        return Math.cos(Math.toRadians(desiredAngle)) * speed;
+    }
+}
 /*
 ___________________________________________________________________________________________________________________________________
 -
@@ -1449,4 +1454,3 @@ right front motor = 3
 
      String verticalLeftEncoderName = lbName, verticalRightEncoderName = lfName, horizontalEncoderName = rfName;
      */
-}
