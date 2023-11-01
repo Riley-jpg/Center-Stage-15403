@@ -1,8 +1,11 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Programs;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-public class babyhwmap extends HardwareMapUtil{
+import org.firstinspires.ftc.teamcode.Programs.HardwareMapUtil;
+
+public class practicehwwmap extends HardwareMapUtil {
     HardwareMap hwmap = null;
 
     public DcMotor leftfrontDrive = null;
@@ -13,6 +16,14 @@ public class babyhwmap extends HardwareMapUtil{
 
     public DcMotor rightbackDrive = null;
 
+    public DcMotor linearActuator = null;
+
+
+    public CRServo theServo = null;
+    public CRServo getTheServo(){
+        return theServo;
+    }
+
 
     public void init(HardwareMap ahwMap){
         hwMap=ahwMap;
@@ -20,12 +31,14 @@ public class babyhwmap extends HardwareMapUtil{
         rightfrontDrive = HardwareInitMotor("rfD", false);
         leftbackDrive = HardwareInitMotor("lbD", true);
         rightbackDrive = HardwareInitMotor("rbD", false);
+        linearActuator = HardwareInitMotor("lA", true);
+        theServo = hwMap.get(CRServo.class, "the");
 
-       /* leftfrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        leftfrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightfrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftbackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        rightbackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
-
+        rightbackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        linearActuator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
 
