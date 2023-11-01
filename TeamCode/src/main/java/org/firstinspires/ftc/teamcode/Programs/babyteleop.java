@@ -1,13 +1,33 @@
-package org.firstinspires.ftc.teamcode.Programs;
+package org.firstinspires.ftc.teamcode;
+import android.graphics.Bitmap;
+import android.os.Handler;
+
+import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Programs.Auto_Util;
-import org.firstinspires.ftc.teamcode.Programs.babyhwmap;
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraCaptureSession;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraManager;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+//import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+import org.firstinspires.ftc.robotcore.internal.collections.EvictingBlockingQueue;
 
 
 @TeleOp(name="baby teleop", group="Pushbot")
-public class babyteleop extends Auto_Util {
+public class babyteleop extends LinearOpMode {
     babyhwmap robot=new babyhwmap();
 
     private ElapsedTime runtime = new ElapsedTime();
@@ -19,11 +39,10 @@ public class babyteleop extends Auto_Util {
     static double lfPower;
     static double rbPower;
     static double rfPower;
-    static double slowamount = 1;
+    static double slowamount ;
 
     public void runOpMode(){
         robot.init(hardwareMap);
-        initAuto();
         telemetry.addData("Status,", "Ready to run");
         telemetry.update();
         waitForStart();
@@ -32,36 +51,43 @@ public class babyteleop extends Auto_Util {
 
             //Drive
 
-            fwdBackPower = gamepad1.left_stick_y;
-            strafePower = gamepad1.left_stick_x;
-            turnPower= gamepad1.right_stick_x;
+            fwdBackPower = gamepad1.left_stick_y * slowamount;
+            strafePower = gamepad1.left_stick_x * slowamount;
+            turnPower = gamepad1.right_stick_x * slowamount;
 
             lfPower = (fwdBackPower - turnPower - strafePower);
             rfPower = (fwdBackPower + turnPower + strafePower);
             lbPower = (fwdBackPower - turnPower + strafePower);
             rbPower = (fwdBackPower + turnPower - strafePower);
 
-            robot.leftfrontDrive.setPower(lfPower*slowamount);
-            robot.leftbackDrive.setPower(lbPower*slowamount);
-            robot.rightfrontDrive.setPower(rfPower*slowamount);
-            robot.rightbackDrive.setPower(rbPower*slowamount);
 
-            if(gamepad1.right_bumper){
-                slowamount=0.5;
-            }  else{
-                slowamount=1;
+            robot.leftfrontDrive.setPower(lfPower);
+            robot.leftbackDrive.setPower(lbPower);
+            robot.rightfrontDrive.setPower(rfPower);
+            robot.rightbackDrive.setPower(rbPower);
+
+            if (gamepad1.right_bumper){
+                slowamount = 0.5;}
+            else if (gamepad1.left_bumper) {
+                slowamount = 0.1;}
+            else{
+                slowamount = 1;}
             }
 
-            if(gamepad1.dpad_up){
+            telemetry.addData("LFpwr", lfPower);
+            telemetry.addData("gamepad left stick x", gamepad1.left_stick_x);
+            telemetry.addData("gamepad left stick y", gamepad1.left_stick_y);
+
+           while(gamepad1.a){
                 robot.leftfrontDrive.setPower(1);
             }
-            if(gamepad1.dpad_right){
+            while(gamepad1.b){
                 robot.rightfrontDrive.setPower(1);
             }
-            if(gamepad1.dpad_down){
+            while(gamepad1.x){
                 robot.leftbackDrive.setPower(1);
             }
-            if(gamepad1.dpad_left){
+            while(gamepad1.y){
                 robot.rightbackDrive.setPower(1);
             }
 
@@ -75,15 +101,3 @@ public class babyteleop extends Auto_Util {
 
 
     }
-
-
-
-
-
-
-
-
-
-
-
-}
