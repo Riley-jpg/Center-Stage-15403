@@ -14,6 +14,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 import android.graphics.Bitmap;
 import android.os.Handler;
+import android.util.Size;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 //import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -51,30 +52,26 @@ import java.util.concurrent.TimeUnit;
 public class PracticeCameraStuff extends LinearOpMode{
     /*
     ___________________________________________________________________________________________________________________________________
-    -Basic Set-Up of Vision Variables
+    -Basic Vision Variables
     ___________________________________________________________________________________________________________________________________
      */
-    HardwareMap hardwareMap = null;
-    WebcamName camera = hardwareMap.get(WebcamName.class,"ToBeAdded");
+    HardwareMap hardwareMap;
+    WebcamName camera;
+
     /*
     ___________________________________________________________________________________________________________________________________
     -TensorFlow Variables
     ___________________________________________________________________________________________________________________________________
      */
-    //Create TensorFlow processor
-    TfodProcessor tfodProcessor = TfodProcessor.easyCreateWithDefaults();
-    //Create VisionPortal with TensorFlow processor
-    VisionPortal visionPortal = VisionPortal.easyCreateWithDefaults(camera, tfodProcessor);
+    TfodProcessor tfodProcessor;
+    VisionPortal visionPortal;
     /*
     ___________________________________________________________________________________________________________________________________
     -AprilTag Variables
     ___________________________________________________________________________________________________________________________________
      */
-    //Create AprilTag processor
-    AprilTagProcessor aprilTagProcessor = AprilTagProcessor.easyCreateWithDefaults();
-
-    //Create VisionPortal with AprilTag processor
-    VisionPortal visionPortal2 = VisionPortal.easyCreateWithDefaults(camera,aprilTagProcessor);
+    AprilTagProcessor aprilTagProcessor;
+    VisionPortal visionPortal2;
 
     /*NAVIGATION WITH APRILTAGS*/
 
@@ -87,61 +84,88 @@ public class PracticeCameraStuff extends LinearOpMode{
     -Exposure & Gain Control Variables
     ___________________________________________________________________________________________________________________________________
      */
-    //Get exposure and gain control
-    ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
-    GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
-
-    //Check if control and manual mode are supported by this camera
-    boolean exposureSupported = exposureControl.isExposureSupported();
-    boolean manualSupported = exposureControl.isModeSupported(ExposureControl.Mode.Manual);
-
-    //Check minimum and maximum exposure and gain
-    long minExposure = exposureControl.getMinExposure(TimeUnit.MILLISECONDS);
-    long maxExposure = exposureControl.getMaxExposure(TimeUnit.MILLISECONDS);
-    int minGain = gainControl.getMinGain();
-    int maxGain = gainControl.getMaxGain();
+    ExposureControl exposureControl;
+    GainControl gainControl;
+    boolean exposureSupported;
+    boolean manualSupported;
+    long minExposure;
+    long maxExposure;
+    int minGain;
+    int maxGain;
 
     /*
     ___________________________________________________________________________________________________________________________________
     -White Balance Variables
     ___________________________________________________________________________________________________________________________________
      */
-    //Get white balance control
-    WhiteBalanceControl whiteBalanceControl = visionPortal.getCameraControl(WhiteBalanceControl.class);
-
-    //White balance control methods
-    int minTemperature = whiteBalanceControl.getMinWhiteBalanceTemperature();
-    int maxTemperature = whiteBalanceControl.getMaxWhiteBalanceTemperature();
+    WhiteBalanceControl whiteBalanceControl;
+    int minTemperature;
+    int maxTemperature;
     /*
     ___________________________________________________________________________________________________________________________________
     -Focus Control Variables
     ___________________________________________________________________________________________________________________________________
      */
-    //Get focus control
-    FocusControl focusControl = visionPortal.getCameraControl(FocusControl.class);
-
-    //Check if control and fixed mode are supported by this camera
-    boolean focusSupported = focusControl.isFocusLengthSupported();
-    boolean fixedSupported = focusControl.isModeSupported(FocusControl.Mode.Fixed);
-
-    //CHeck minimum and maximum focus length
-    double minFocusLength = focusControl.getMinFocusLength();
-    double maxFocusLength = focusControl.getMaxFocusLength();
+    FocusControl focusControl;
+    boolean focusSupported;
+    boolean fixedSupported;
+    double minFocusLength;
+    double maxFocusLength;
 
     /*
     ___________________________________________________________________________________________________________________________________
     -Pan-Tilt-Zoom(PTZ) Variables
     ___________________________________________________________________________________________________________________________________
      */
-    //Get PTZ control
-    PtzControl ptzControl  = visionPortal.getCameraControl(PtzControl.class);
-
-    //Check minimum and maximum pan, tilt, and zoom
-    PtzControl.PanTiltHolder minPanTilt = ptzControl.getMinPanTilt();
-    PtzControl.PanTiltHolder maxPanTilt = ptzControl.getMaxPanTilt();
-    int minZoom = ptzControl.getMinZoom();
-    int maxZoom = ptzControl.getMaxZoom();
+    PtzControl ptzControl;
+    PtzControl.PanTiltHolder minPanTilt;
+    PtzControl.PanTiltHolder maxPanTilt;
+    int minZoom;
+    int maxZoom;
     public void PracticeCameraStuffSetUp(int gain, int temp, PtzControl.PanTiltHolder panTiltHolder,int zoom){
+        /*
+        Basic Set-up of Vision Variables
+        */
+
+        hardwareMap = null;
+        camera = hardwareMap.get(WebcamName.class,"ToBeAdded");
+
+        /*
+        TFOD
+        */
+
+        //Create TensorFlow processor
+        tfodProcessor = TfodProcessor.easyCreateWithDefaults();
+        //Create VisionPortal with TensorFlow processor
+        visionPortal = VisionPortal.easyCreateWithDefaults(camera, tfodProcessor);
+
+        /*
+        AprilTags
+        */
+
+        //Create AprilTag processor
+        aprilTagProcessor = AprilTagProcessor.easyCreateWithDefaults();
+        //Create VisionPortal with AprilTag processor
+        visionPortal2 = VisionPortal.easyCreateWithDefaults(camera,aprilTagProcessor);
+
+        /*
+        Exposure and Gain
+        */
+
+        //Get exposure and gain control
+        exposureControl = visionPortal.getCameraControl(ExposureControl.class);
+        gainControl = visionPortal.getCameraControl(GainControl.class);
+
+        //Check if control and manual mode are supported by this camera
+        exposureSupported = exposureControl.isExposureSupported();
+        manualSupported = exposureControl.isModeSupported(ExposureControl.Mode.Manual);
+
+        //Check minimum and maximum exposure and gain
+        minExposure = exposureControl.getMinExposure(TimeUnit.MILLISECONDS);
+        maxExposure = exposureControl.getMaxExposure(TimeUnit.MILLISECONDS);
+        minGain = gainControl.getMinGain();
+        maxGain = gainControl.getMaxGain();
+
         //Set exposure mode to manual (also sets manual gain)
         exposureControl.setMode(ExposureControl.Mode.Manual);
 
@@ -149,17 +173,54 @@ public class PracticeCameraStuff extends LinearOpMode{
         exposureControl.setExposure(0l,TimeUnit.MILLISECONDS);
         gainControl.setGain(1);//needs an int gain!!!
 
+        /*
+        White Balance
+        */
+
+        //Get white balance control
+        whiteBalanceControl = visionPortal.getCameraControl(WhiteBalanceControl.class);
+
+        //White balance control methods
+        minTemperature = whiteBalanceControl.getMinWhiteBalanceTemperature();
+        maxTemperature = whiteBalanceControl.getMaxWhiteBalanceTemperature();
+
         //Set white balance mod to manual
         whiteBalanceControl.setMode(WhiteBalanceControl.Mode.MANUAL);
 
         //Set Temperature
         whiteBalanceControl.setWhiteBalanceTemperature(1);//needs and int temp!!!
 
+        /*
+        Focus Control
+        */
+
+        //Get focus control
+        focusControl = visionPortal.getCameraControl(FocusControl.class);
+
+        //Check if control and fixed mode are supported by this camera
+        focusSupported = focusControl.isFocusLengthSupported();
+        fixedSupported = focusControl.isModeSupported(FocusControl.Mode.Fixed);
+        //Check minimum and maximum focus length
+        minFocusLength = focusControl.getMinFocusLength();
+        maxFocusLength = focusControl.getMaxFocusLength();
+
         //Set focus mode to fixed
         focusControl.setMode(FocusControl.Mode.Fixed);
 
         //Set focus length
-        //focusControl.setFocuslength(focusLength);
+        //focusControl.setFocuslength(focusLength);//double foucuslength!!!
+
+        /*
+        PTZ
+        */
+
+        //Get PTZ control
+        ptzControl  = visionPortal.getCameraControl(PtzControl.class);
+        //Check minimum and maximum pan, tilt, and zoom
+        minPanTilt = ptzControl.getMinPanTilt();
+        maxPanTilt = ptzControl.getMaxPanTilt();
+        minZoom = ptzControl.getMinZoom();
+        maxZoom = ptzControl.getMaxZoom();
 
         //Set pan, tilt, and zoom
         ptzControl.setPanTilt(panTiltHolder);
