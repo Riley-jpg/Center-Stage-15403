@@ -137,7 +137,7 @@ public class PracticeCameraStuff extends LinearOpMode{
         //Create TensorFlow processor
         tfodProcessor = TfodProcessor.easyCreateWithDefaults();
         //Create VisionPortal with TensorFlow processor
-        visionPortal = VisionPortal.easyCreateWithDefaults(camera, tfodProcessor);
+        visionPortal = VisionPortal.easyCreateWithDefaults(camera, tfodProcessor,aprilTagProcessor);
 
         /*
         AprilTags

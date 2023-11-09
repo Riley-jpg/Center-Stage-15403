@@ -57,6 +57,7 @@ public class PracticeCameraProgramPart2 extends LinearOpMode {
      */
     HardwareMap hardwareMap;
     WebcamName camera;
+    float fps;
     /*
     ___________________________________________________________________________________________________________________________________
     -VisionPortal Variables
@@ -64,36 +65,71 @@ public class PracticeCameraProgramPart2 extends LinearOpMode {
      */
     VisionPortal.Builder visionPortalBuilder;
     VisionPortal visionPortal;
+    VisionPortal.CameraState cameraState;
     /*
     ___________________________________________________________________________________________________________________________________
     -TensorFlow Variables
     ___________________________________________________________________________________________________________________________________
      */
+    TfodProcessor tfodProcessor;
+    VisionPortal tfodVisionPortal;
     /*
     ___________________________________________________________________________________________________________________________________
     -AprilTag Variables
     ___________________________________________________________________________________________________________________________________
      */
+    AprilTagProcessor aprilTagProcessor;
+    VisionPortal aprilTagVisionPortal;
+
+    /*NAVIGATION WITH APRILTAGS*/
+
+    //Tag pose relative to camera
+    double range = 0d;
+    double bearing = 0d;
+    double yaw = 0d;
     /*
     ___________________________________________________________________________________________________________________________________
-    -Exposure and Gain Variables
+    -Exposure & Gain Control Variables
     ___________________________________________________________________________________________________________________________________
      */
+    ExposureControl exposureControl;
+    GainControl gainControl;
+    boolean exposureSupported;
+    boolean manualSupported;
+    long minExposure;
+    long maxExposure;
+    int minGain;
+    int maxGain;
+
     /*
     ___________________________________________________________________________________________________________________________________
     -White Balance Variables
     ___________________________________________________________________________________________________________________________________
      */
+    WhiteBalanceControl whiteBalanceControl;
+    int minTemperature;
+    int maxTemperature;
     /*
     ___________________________________________________________________________________________________________________________________
     -Focus Control Variables
     ___________________________________________________________________________________________________________________________________
      */
+    FocusControl focusControl;
+    boolean focusSupported;
+    boolean fixedSupported;
+    double minFocusLength;
+    double maxFocusLength;
+
     /*
     ___________________________________________________________________________________________________________________________________
-    -Pan-Tilt-Zoom Variables
+    -Pan-Tilt-Zoom(PTZ) Variables
     ___________________________________________________________________________________________________________________________________
      */
+    PtzControl ptzControl;
+    PtzControl.PanTiltHolder minPanTilt;
+    PtzControl.PanTiltHolder maxPanTilt;
+    int minZoom;
+    int maxZoom;
     public void PracticeCameraStuffSetUp(int gain, int temp, PtzControl.PanTiltHolder panTiltHolder,int zoom){
         /*
         Basic Set-up of Vision Variables
@@ -119,11 +155,53 @@ public class PracticeCameraProgramPart2 extends LinearOpMode {
         //Build vision portal
         visionPortal = visionPortalBuilder.build();
 
+        //Get camera state (eg. ready, streaming, closed, etc)
+        cameraState = visionPortal.getCameraState();//Could be in both set-up and run methods!!!
+
+        /*
+        Get Camera Controls
+        */
+        exposureControl = visionPortal.getCameraControl(ExposureControl.class);
+        gainControl = visionPortal.getCameraControl(GainControl.class);
+        whiteBalanceControl = visionPortal.getCameraControl(WhiteBalanceControl.class);
+        focusControl = visionPortal.getCameraControl(FocusControl.class);
+        ptzControl = visionPortal.getCameraControl(PtzControl.class);
+
+        //Get current frame rate to estimate CPU load
+        fps = visionPortal.getFps();
+
+        /*
+        TensorFlow Processor Builder
+        */
 
     }
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry.addData("you shouldn't be here!", "This program isnt meant to be run, only for use with all of its methods");
+
+        //Save next frame captured by camera to "/sdcard/VisionPortal-myImage.png"
+        visionPortal.saveNextFrameRaw("myImage");
+
+
         telemetry.update();
     }
+    /*
+    ___________________________________________________________________________________________________________________________________
+    -Extra Code that might be useful
+    ___________________________________________________________________________________________________________________________________
+     */
+    /*
+
+    //Change to different camera
+    visionPortal.setActiveCamera(hardwareMap.get(WebcamName.class,"Webcam 2"));
+
+    //Disable features to manage CPU load
+        visionPortal.stopLiveView();
+        visionPortal.setProcessorEnabled(tfodProcessor,false);//set to separate visionProcessor!!!
+        visionPortal.stopStreaming();
+
+    //Close VisionPortal to stop everything
+        visionPortal.close();
+
+    */
 }
