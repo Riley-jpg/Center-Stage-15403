@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Programs;
 import android.graphics.Bitmap;
 import android.os.Handler;
 
@@ -51,9 +51,9 @@ public class babyteleop extends LinearOpMode {
 
             //Drive
 
-            fwdBackPower = gamepad1.left_stick_y * slowamount;
-            strafePower = gamepad1.left_stick_x * slowamount;
-            turnPower = gamepad1.right_stick_x * slowamount;
+            fwdBackPower = -gamepad1.left_stick_y * slowamount;
+            strafePower = -gamepad1.left_stick_x * slowamount;
+            turnPower = -gamepad1.right_stick_x * slowamount;
 
             lfPower = (fwdBackPower - turnPower - strafePower);
             rfPower = (fwdBackPower + turnPower + strafePower);
@@ -73,23 +73,30 @@ public class babyteleop extends LinearOpMode {
             else{
                 slowamount = 1;}
             }
+            if(gamepad1.a){
+                robot.armMotorOne.setPower(1);
+            } else if(gamepad1.b){
+                robot.armMotorOne.setPower(-1);
+            }
+          if(gamepad1.x){
+                robot.armMotorTwo.setPower(1);
+            } else if(gamepad1.y){
+                robot.armMotorTwo.setPower(-1);
 
-            telemetry.addData("LFpwr", lfPower);
-            telemetry.addData("gamepad left stick x", gamepad1.left_stick_x);
-            telemetry.addData("gamepad left stick y", gamepad1.left_stick_y);
+            }
 
-           while(gamepad1.a){
+           /*while(gamepad1.dpad_up){
                 robot.leftfrontDrive.setPower(1);
             }
-            while(gamepad1.b){
+            while(gamepad1.dpad_left){
                 robot.rightfrontDrive.setPower(1);
             }
-            while(gamepad1.x){
+            while(gamepad1.dpad_down){
                 robot.leftbackDrive.setPower(1);
             }
-            while(gamepad1.y){
+            while(gamepad1.dpad_right){
                 robot.rightbackDrive.setPower(1);
-            }
+            }*/
 
         }
 
