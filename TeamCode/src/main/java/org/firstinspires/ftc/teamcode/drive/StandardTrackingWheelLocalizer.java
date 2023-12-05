@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /*
- * Sample tracking wheel localizer implementation assuming the standard configuration:
+ * Sample tracking wheel localizer implementation assuming the standard configuration: AAAAAAAAAAAAAAAAAAAA
  *
  *    /--------------\
  *    |     ____     |
