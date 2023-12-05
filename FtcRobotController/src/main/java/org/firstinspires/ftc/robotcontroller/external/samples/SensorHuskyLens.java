@@ -30,9 +30,9 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package org.firstinspires.ftc.robotcontroller.external.samples;
+//package org.firstinspires.ftc.robotcontroller.external.samples;
 
-import com.qualcomm.hardware.dfrobot.HuskyLens;
+//import com.qualcomm.hardware.dfrobot.HuskyLens;
 import com.qualcomm.hardware.rev.Rev2mDistanceSensor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -59,30 +59,30 @@ import java.util.concurrent.TimeUnit;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-@TeleOp(name = "Sensor: HuskyLens", group = "Sensor")
-@Disabled
-public class SensorHuskyLens extends LinearOpMode {
+//@TeleOp(name = "Sensor: HuskyLens", group = "Sensor")
+//@Disabled
+//public class SensorHuskyLens extends LinearOpMode {
 
-    private final int READ_PERIOD = 1;
+//    private final int READ_PERIOD = 1;
 
-    private HuskyLens huskyLens;
+    //private HuskyLens huskyLens;
 
-    @Override
-    public void runOpMode()
-    {
-        huskyLens = hardwareMap.get(HuskyLens.class, "huskylens");
+ //   @Override
+   // public void runOpMode()
+    //{
+     //   huskyLens = hardwareMap.get(HuskyLens.class, "huskylens");
 
         /*
          * This sample rate limits the reads solely to allow a user time to observe
          * what is happening on the Driver Station telemetry.  Typical applications
          * would not likely rate limit.
          */
-        Deadline rateLimit = new Deadline(READ_PERIOD, TimeUnit.SECONDS);
+        //Deadline rateLimit = new Deadline(READ_PERIOD, TimeUnit.SECONDS);
 
         /*
          * Immediately expire so that the first time through we'll do the read.
          */
-        rateLimit.expire();
+        //rateLimit.expire();
 
         /*
          * Basic check to see if the device is alive and communicating.  This is not
@@ -92,11 +92,11 @@ public class SensorHuskyLens extends LinearOpMode {
          * failing on initialization.  In the case of this device, it's because the
          * call to knock() failed.
          */
-        if (!huskyLens.knock()) {
-            telemetry.addData(">>", "Problem communicating with " + huskyLens.getDeviceName());
-        } else {
-            telemetry.addData(">>", "Press start to continue");
-        }
+       // if (!huskyLens.knock()) {
+         //   telemetry.addData(">>", "Problem communicating with " + huskyLens.getDeviceName());
+        //} else {
+        //    telemetry.addData(">>", "Press start to continue");
+        //}
 
         /*
          * The device uses the concept of an algorithm to determine what types of
@@ -111,10 +111,10 @@ public class SensorHuskyLens extends LinearOpMode {
          * within the OpMode by calling selectAlgorithm() and passing it one of the values
          * found in the enumeration HuskyLens.Algorithm.
          */
-        huskyLens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
+      //  huskyLens.selectAlgorithm(HuskyLens.Algorithm.TAG_RECOGNITION);
 
-        telemetry.update();
-        waitForStart();
+        //telemetry.update();
+        //waitForStart();
 
         /*
          * Looking for AprilTags per the call to selectAlgorithm() above.  A handy grid
@@ -122,11 +122,11 @@ public class SensorHuskyLens extends LinearOpMode {
          *
          * Note again that the device only recognizes the 36h11 family of tags out of the box.
          */
-        while(opModeIsActive()) {
-            if (!rateLimit.hasExpired()) {
-                continue;
-            }
-            rateLimit.reset();
+        //while(opModeIsActive()) {
+           // if (!rateLimit.hasExpired()) {
+             //   continue;
+            //}
+            //rateLimit.reset();
 
             /*
              * All algorithms, except for LINE_TRACKING, return a list of Blocks where a
@@ -137,6 +137,7 @@ public class SensorHuskyLens extends LinearOpMode {
              *
              * Returns an empty array if no objects are seen.
              */
+    /*
             HuskyLens.Block[] blocks = huskyLens.blocks();
             telemetry.addData("Block count", blocks.length);
             for (int i = 0; i < blocks.length; i++) {
@@ -147,3 +148,4 @@ public class SensorHuskyLens extends LinearOpMode {
         }
     }
 }
+*/
