@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.PtzCont
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.WhiteBalanceControl;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.VisionProcessor;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -50,8 +51,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-
+@TeleOp(name="Practice Camera Program?", group="Pushbot")
 public class PracticeCameraStuff extends LinearOpMode{
+
     /*
     ___________________________________________________________________________________________________________________________________
     -Basic Vision Variables
@@ -59,8 +61,8 @@ public class PracticeCameraStuff extends LinearOpMode{
      */
     HardwareMap hardwareMap;
     WebcamName camera;
-
-
+    VisionProcessor visionProcessor;
+    private static final boolean USE_WEBCAM = true;
     /*
     ___________________________________________________________________________________________________________________________________
     -TensorFlow Variables
@@ -129,14 +131,15 @@ public class PracticeCameraStuff extends LinearOpMode{
     PtzControl.PanTiltHolder maxPanTilt;
     int minZoom;
     int maxZoom;
-    public void PracticeCameraStuffSetUp(int gain, int temp, PtzControl.PanTiltHolder panTiltHolder,int zoom){
+    public void initPracticeCameraStuff(){
        /*
        Basic Set-up of Vision Variables
+       int gain, int temp, PtzControl.PanTiltHolder panTiltHolder,int zoom
        */
 
 
         hardwareMap = null;
-        camera = hardwareMap.get(WebcamName.class,"ToBeAdded");
+        camera = hardwareMap.get(WebcamName.class,"Webcam 1");
 
 
        /*
@@ -145,9 +148,14 @@ public class PracticeCameraStuff extends LinearOpMode{
 
 
         //Create TensorFlow processor
-        tfodProcessor = TfodProcessor.easyCreateWithDefaults();
+        tfodProcessor = new TfodProcessor.Builder()
+                .build();
         //Create VisionPortal with TensorFlow processor
-        visionPortal = VisionPortal.easyCreateWithDefaults(camera, tfodProcessor,aprilTagProcessor);
+        visionPortal = new VisionPortal.Builder()
+                .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
+                .addProcessors(tfodProcessor, aprilTagProcessor)
+                .build();
+        telemetry.addLine("VisionPortalAdded");
 
 
        /*
@@ -156,7 +164,8 @@ public class PracticeCameraStuff extends LinearOpMode{
 
 
         //Create AprilTag processor
-        aprilTagProcessor = AprilTagProcessor.easyCreateWithDefaults();
+        aprilTagProcessor = new AprilTagProcessor.Builder()
+                .build();
         //Create VisionPortal with AprilTag processor
         visionPortal2 = VisionPortal.easyCreateWithDefaults(camera,aprilTagProcessor);
 
@@ -188,8 +197,8 @@ public class PracticeCameraStuff extends LinearOpMode{
 
 
         //Set exposure and gain values
-        exposureControl.setExposure(0l,TimeUnit.MILLISECONDS);
-        gainControl.setGain(1);//needs an int gain!!!
+        exposureControl.setExposure(40l,TimeUnit.MILLISECONDS);
+        gainControl.setGain(0);//needs an int gain!!!
 
 
        /*
@@ -254,29 +263,29 @@ public class PracticeCameraStuff extends LinearOpMode{
 
 
         //Set pan, tilt, and zoom
-        ptzControl.setPanTilt(panTiltHolder);
-        ptzControl.setZoom(zoom);
+        //ptzControl.setPanTilt(panTiltHolder);
+        //ptzControl.setZoom(zoom);
     }
     @Override
     public void runOpMode() throws InterruptedException {
-        telemetry.addData("you shouldn't be here!", "This program isnt meant to be run, only for use with all of its methods");
+        telemetry.addData("CamerraOpModeEntered!", "This program hopefully gives details about what the camera sees");
    /*
    ___________________________________________________________________________________________________________________________________
    -VisionPortal OpMode Management
    ___________________________________________________________________________________________________________________________________
     */
         //Get current frame rate to estimate CPU load
-        float fps = visionPortal.getFps();
+        //float fps = visionPortal.getFps();
 
 
         //Disable features to manage CPU load
-        //visionPortal.setProcessorEnabled(visionProcessor,false);
-        visionPortal.stopLiveView();
-        visionPortal.stopStreaming();
+       // visionPortal.setProcessorEnabled(tfodProcessor,false);
+        //visionPortal.stopLiveView();
+        //visionPortal.stopStreaming();
 
 
         //Close VisionPortal to stop everything
-        visionPortal.close();
+        //visionPortal.close();
    /*
    ___________________________________________________________________________________________________________________________________
    -TensorFlow Management
