@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Programs;
 
+
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.FocusControl;
@@ -49,6 +50,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+
 public class PracticeCameraStuff extends LinearOpMode{
     /*
     ___________________________________________________________________________________________________________________________________
@@ -57,6 +59,7 @@ public class PracticeCameraStuff extends LinearOpMode{
      */
     HardwareMap hardwareMap;
     WebcamName camera;
+
 
     /*
     ___________________________________________________________________________________________________________________________________
@@ -73,7 +76,9 @@ public class PracticeCameraStuff extends LinearOpMode{
     AprilTagProcessor aprilTagProcessor;
     VisionPortal visionPortal2;
 
+
     /*NAVIGATION WITH APRILTAGS*/
+
 
     //Tag pose relative to camera
     double range = 0d;
@@ -92,6 +97,7 @@ public class PracticeCameraStuff extends LinearOpMode{
     long maxExposure;
     int minGain;
     int maxGain;
+
 
     /*
     ___________________________________________________________________________________________________________________________________
@@ -112,6 +118,7 @@ public class PracticeCameraStuff extends LinearOpMode{
     double minFocusLength;
     double maxFocusLength;
 
+
     /*
     ___________________________________________________________________________________________________________________________________
     -Pan-Tilt-Zoom(PTZ) Variables
@@ -123,42 +130,51 @@ public class PracticeCameraStuff extends LinearOpMode{
     int minZoom;
     int maxZoom;
     public void PracticeCameraStuffSetUp(int gain, int temp, PtzControl.PanTiltHolder panTiltHolder,int zoom){
-        /*
-        Basic Set-up of Vision Variables
-        */
+       /*
+       Basic Set-up of Vision Variables
+       */
+
 
         hardwareMap = null;
         camera = hardwareMap.get(WebcamName.class,"ToBeAdded");
 
-        /*
-        TFOD
-        */
+
+       /*
+       TFOD
+       */
+
 
         //Create TensorFlow processor
         tfodProcessor = TfodProcessor.easyCreateWithDefaults();
         //Create VisionPortal with TensorFlow processor
-        visionPortal = VisionPortal.easyCreateWithDefaults(camera, tfodProcessor);
+        visionPortal = VisionPortal.easyCreateWithDefaults(camera, tfodProcessor,aprilTagProcessor);
 
-        /*
-        AprilTags
-        */
+
+       /*
+       AprilTags
+       */
+
 
         //Create AprilTag processor
         aprilTagProcessor = AprilTagProcessor.easyCreateWithDefaults();
         //Create VisionPortal with AprilTag processor
         visionPortal2 = VisionPortal.easyCreateWithDefaults(camera,aprilTagProcessor);
 
-        /*
-        Exposure and Gain
-        */
+
+       /*
+       Exposure and Gain
+       */
+
 
         //Get exposure and gain control
         exposureControl = visionPortal.getCameraControl(ExposureControl.class);
         gainControl = visionPortal.getCameraControl(GainControl.class);
 
+
         //Check if control and manual mode are supported by this camera
         exposureSupported = exposureControl.isExposureSupported();
         manualSupported = exposureControl.isModeSupported(ExposureControl.Mode.Manual);
+
 
         //Check minimum and maximum exposure and gain
         minExposure = exposureControl.getMinExposure(TimeUnit.MILLISECONDS);
@@ -166,36 +182,46 @@ public class PracticeCameraStuff extends LinearOpMode{
         minGain = gainControl.getMinGain();
         maxGain = gainControl.getMaxGain();
 
+
         //Set exposure mode to manual (also sets manual gain)
         exposureControl.setMode(ExposureControl.Mode.Manual);
+
 
         //Set exposure and gain values
         exposureControl.setExposure(0l,TimeUnit.MILLISECONDS);
         gainControl.setGain(1);//needs an int gain!!!
 
-        /*
-        White Balance
-        */
+
+       /*
+       White Balance
+       */
+
 
         //Get white balance control
         whiteBalanceControl = visionPortal.getCameraControl(WhiteBalanceControl.class);
+
 
         //White balance control methods
         minTemperature = whiteBalanceControl.getMinWhiteBalanceTemperature();
         maxTemperature = whiteBalanceControl.getMaxWhiteBalanceTemperature();
 
+
         //Set white balance mod to manual
         whiteBalanceControl.setMode(WhiteBalanceControl.Mode.MANUAL);
+
 
         //Set Temperature
         whiteBalanceControl.setWhiteBalanceTemperature(1);//needs and int temp!!!
 
-        /*
-        Focus Control
-        */
+
+       /*
+       Focus Control
+       */
+
 
         //Get focus control
         focusControl = visionPortal.getCameraControl(FocusControl.class);
+
 
         //Check if control and fixed mode are supported by this camera
         focusSupported = focusControl.isFocusLengthSupported();
@@ -204,15 +230,19 @@ public class PracticeCameraStuff extends LinearOpMode{
         minFocusLength = focusControl.getMinFocusLength();
         maxFocusLength = focusControl.getMaxFocusLength();
 
+
         //Set focus mode to fixed
         focusControl.setMode(FocusControl.Mode.Fixed);
+
 
         //Set focus length
         //focusControl.setFocuslength(focusLength);//double foucuslength!!!
 
-        /*
-        PTZ
-        */
+
+       /*
+       PTZ
+       */
+
 
         //Get PTZ control
         ptzControl  = visionPortal.getCameraControl(PtzControl.class);
@@ -222,6 +252,7 @@ public class PracticeCameraStuff extends LinearOpMode{
         minZoom = ptzControl.getMinZoom();
         maxZoom = ptzControl.getMaxZoom();
 
+
         //Set pan, tilt, and zoom
         ptzControl.setPanTilt(panTiltHolder);
         ptzControl.setZoom(zoom);
@@ -229,54 +260,62 @@ public class PracticeCameraStuff extends LinearOpMode{
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry.addData("you shouldn't be here!", "This program isnt meant to be run, only for use with all of its methods");
-    /*
-    ___________________________________________________________________________________________________________________________________
-    -VisionPortal OpMode Management
-    ___________________________________________________________________________________________________________________________________
-     */
+   /*
+   ___________________________________________________________________________________________________________________________________
+   -VisionPortal OpMode Management
+   ___________________________________________________________________________________________________________________________________
+    */
         //Get current frame rate to estimate CPU load
         float fps = visionPortal.getFps();
+
 
         //Disable features to manage CPU load
         //visionPortal.setProcessorEnabled(visionProcessor,false);
         visionPortal.stopLiveView();
         visionPortal.stopStreaming();
 
+
         //Close VisionPortal to stop everything
         visionPortal.close();
-    /*
-    ___________________________________________________________________________________________________________________________________
-    -TensorFlow Management
-    ___________________________________________________________________________________________________________________________________
-     */
+   /*
+   ___________________________________________________________________________________________________________________________________
+   -TensorFlow Management
+   ___________________________________________________________________________________________________________________________________
+    */
         //Get recognized objects from TensorFlow
         List<Recognition> recognitions = tfodProcessor.getRecognitions();
+
 
         //Iterate through each recognized object in the list
         for (Recognition recognition : recognitions) {
             //Get label of this recognized object
             String label = recognition.getLabel();
 
+
             //Get confidence of this recognized object
             float confidence = recognition.getConfidence();
+
 
             //Add this label and confidence to the telemetry
             telemetry.addLine("Recognized object" + label);
             telemetry.addLine("Recognized confidence" + confidence);
 
+
         }
-    /*
-    ___________________________________________________________________________________________________________________________________
-    -AprilTag Management
-    ___________________________________________________________________________________________________________________________________
-     */
+   /*
+   ___________________________________________________________________________________________________________________________________
+   -AprilTag Management
+   ___________________________________________________________________________________________________________________________________
+    */
         //Get dectected tags from AprilTag processor
         List<AprilTagDetection> detections = aprilTagProcessor.getDetections();
         //Iterate through each detected tag in the list
         for (AprilTagDetection detection : detections) {
 
+
             //Get tag ID number
             int id = detection.id;
+
 
             //Get pose information of this tag
             AprilTagPoseFtc aprilTagPoseFtc = detection.ftcPose;
@@ -285,18 +324,21 @@ public class PracticeCameraStuff extends LinearOpMode{
             telemetry.addLine("Bearing to tag: " + aprilTagPoseFtc.bearing);
             telemetry.addLine("Angle of tag: " + aprilTagPoseFtc.yaw);
 
+
             //Tag pose relative to camera
             range = aprilTagPoseFtc.range;
             bearing = aprilTagPoseFtc.bearing;
             yaw = aprilTagPoseFtc.yaw;
             /*
-            * STRATEGY
-            * Reduce Bearing to Zero by Turning
-            * Reduce Yaw to Zero by Driving Sideways
-            * */
+             * STRATEGY
+             * Reduce Bearing to Zero by Turning
+             * Reduce Yaw to Zero by Driving Sideways
+             * */
         }
         telemetry.update();
     }
+
+
 
 
 }
