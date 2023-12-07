@@ -40,9 +40,14 @@ public class babyteleop extends LinearOpMode {
     static double rbPower;
     static double rfPower;
     static double slowamount ;
+    static double open = .3;
+    static double closed = .5;
+
+    private boolean changed1 = false;
 
     public void runOpMode(){
         robot.init(hardwareMap);
+
         telemetry.addData("Status,", "Ready to run");
         telemetry.update();
         waitForStart();
@@ -51,9 +56,9 @@ public class babyteleop extends LinearOpMode {
 
             //Drive
 
-            fwdBackPower = gamepad1.left_stick_y * slowamount;
-            strafePower = gamepad1.left_stick_x * slowamount;
-            turnPower = gamepad1.right_stick_x * slowamount;
+            fwdBackPower = -gamepad1.left_stick_y * slowamount;
+            strafePower = -gamepad1.left_stick_x * slowamount;
+            turnPower = -gamepad1.right_stick_x * slowamount;
 
             lfPower = (fwdBackPower - turnPower - strafePower);
             rfPower = (fwdBackPower + turnPower + strafePower);
@@ -66,30 +71,59 @@ public class babyteleop extends LinearOpMode {
             robot.rightfrontDrive.setPower(rfPower);
             robot.rightbackDrive.setPower(rbPower);
 
+
             if (gamepad1.right_bumper){
                 slowamount = 0.5;}
             else if (gamepad1.left_bumper) {
                 slowamount = 0.1;}
             else{
                 slowamount = 1;}
+
+            robot.armMotorTwo.setPower(gamepad2.left_stick_y);
+            robot.armMotorOne.setPower(gamepad2.right_stick_y*.5);
+
+
+
+            if(gamepad2.a){
+                robot.armServo.setPower(5);
+            } else if(gamepad2.b){
+                robot.armServo.setPower(-5);
+            } else{
+                robot.armServo.setPower(0);
             }
+            if(gamepad2.x){
+                robot.posServo.setPosition(open);
+            } else if(gamepad2.y){
+                robot.posServo.setPosition(closed);
+            }}
+           /* if(gamepad1.a){
+                robot.armMotorOne.setPower(1);
+            } else if(gamepad1.b){
+                robot.armMotorOne.setPower(-1);
+            } else{
+                robot.armMotorOne.setPower(0);
+            }
+          if(gamepad1.x){
+                robot.armMotorTwo.setPower(1);
+            } else if(gamepad1.y){
+                robot.armMotorTwo.setPower(-1);
 
-            telemetry.addData("LFpwr", lfPower);
-            telemetry.addData("gamepad left stick x", gamepad1.left_stick_x);
-            telemetry.addData("gamepad left stick y", gamepad1.left_stick_y);
+            } else{
+              robot.armMotorTwo.setPower(0);
+          }*/
 
-           while(gamepad1.a){
+           /*while(gamepad1.dpad_up){
                 robot.leftfrontDrive.setPower(1);
             }
-            while(gamepad1.b){
+            while(gamepad1.dpad_left){
                 robot.rightfrontDrive.setPower(1);
             }
-            while(gamepad1.x){
+            while(gamepad1.dpad_down){
                 robot.leftbackDrive.setPower(1);
             }
-            while(gamepad1.y){
+            while(gamepad1.dpad_right){
                 robot.rightbackDrive.setPower(1);
-            }
+            }*/
 
         }
 
