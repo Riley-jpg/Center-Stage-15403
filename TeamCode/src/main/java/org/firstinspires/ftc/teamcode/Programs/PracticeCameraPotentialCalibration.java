@@ -3,14 +3,20 @@ package org.firstinspires.ftc.teamcode.Programs;
 
 
 
+import static java.lang.Boolean.TRUE;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
+import org.firstinspires.ftc.vision.apriltag.AprilTagLibrary;
+import org.firstinspires.ftc.vision.apriltag.AprilTagMetadata;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
@@ -25,8 +31,8 @@ import java.util.List;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
-@TeleOp(name = "Concept: Double Vision", group = "Concept")
-@Disabled
+@TeleOp(name = "Concept: Double Vision", group = "Pushbot")
+
 public class PracticeCameraPotentialCalibration extends LinearOpMode {
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
@@ -35,8 +41,9 @@ public class PracticeCameraPotentialCalibration extends LinearOpMode {
      * The variable to store our instance of the AprilTag processor.
      */
     private AprilTagProcessor aprilTag;
-
-
+    private AprilTagLibrary.Builder aprilTagLibraryBuilder;
+    private AprilTagLibrary aprilTagLibrary;
+    private AprilTagMetadata aprilTagMetadata;
     /**
      * The variable to store our instance of the TensorFlow Object Detection processor.
      */
@@ -119,9 +126,37 @@ public class PracticeCameraPotentialCalibration extends LinearOpMode {
         // -----------------------------------------------------------------------------------------
         // AprilTag Configuration
         // -----------------------------------------------------------------------------------------
+        // Creates a new AprilTagLibrary.Builder object and assigns it to a variable.
+        // Adds all the tags from the given AprilTagLibrary to the AprilTagLibrary.Builder.
+        // Gets the AprilTagLibrary for the current season.
+        aprilTagLibraryBuilder = new AprilTagLibrary.Builder().addTags(AprilTagGameDatabase.getCurrentGameTagLibrary());
+        aprilTagLibraryBuilder.setAllowOverwrite(true);
+        // Create a new AprilTagMetdata object and assign it to a variable.
+        String alliance = "";
+        String place = "";
+        for(int a=0;a<2;a++)
+        {
+            for(int s=1;s<4;s++)
+            {
+                if(a==0)
+                {alliance = "Blue";}
+                else
+                {alliance = "Red";}
+                if(s==1)
+                {place = "Left";}
+                else if(s==2)
+                {place = "Center";}
+                else
+                {place = "Right";}
+                // Add a tag to the AprilTagLibrary.Builder.
+                aprilTagLibraryBuilder.addTag(new AprilTagMetadata((a*3)+(s), alliance+" Alliance "+place+" ", 0.166, DistanceUnit.METER));
+            }
+        }
 
+        // Build the AprilTag library and assign it to a variable.
+        aprilTagLibrary = aprilTagLibraryBuilder.build();
 
-        aprilTag = new AprilTagProcessor.Builder()
+        aprilTag = new AprilTagProcessor.Builder().setTagLibrary(aprilTagLibrary)
                 .build();
 
 
