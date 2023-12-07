@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.Programs;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 public class babyhwmap extends HardwareMapUtil {
     HardwareMap hwmap = null;
@@ -15,6 +18,8 @@ public class babyhwmap extends HardwareMapUtil {
 
     public DcMotor armMotorOne = null;
     public DcMotor armMotorTwo = null;
+    public CRServo armServo = null;
+    public Servo posServo = null;
 
 
     public void init(HardwareMap ahwMap){
@@ -25,7 +30,10 @@ public class babyhwmap extends HardwareMapUtil {
         rightbackDrive = HardwareInitMotor("rbD", false);
         armMotorOne = HardwareInitMotor("arm_1", true);
         armMotorTwo = HardwareInitMotor("arm_2", true);
+        armServo = hwMap.get(CRServo.class, "servo");
+        posServo = hwMap.get(Servo.class, "posServo");
 
+        armServo.setDirection(DcMotorSimple.Direction.FORWARD);
 
         leftfrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightfrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
