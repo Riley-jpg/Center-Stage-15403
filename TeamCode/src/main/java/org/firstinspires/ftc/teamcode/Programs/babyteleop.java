@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Programs;
 import android.graphics.Bitmap;
 import android.os.Handler;
 
@@ -80,7 +80,7 @@ public class babyteleop extends LinearOpMode {
                 slowamount = 1;}
 
             robot.armMotorTwo.setPower(gamepad2.left_stick_y);
-            robot.armMotorOne.setPower(-gamepad2.right_stick_y*.5);
+            robot.armMotorOne.setPower(gamepad2.right_stick_y*.5);
 
 
 
@@ -125,13 +125,13 @@ public class babyteleop extends LinearOpMode {
                 robot.rightbackDrive.setPower(1);
             }*/
 
+        }
+
+
+
+
+
+
+
+
     }
-
-
-
-
-
-
-
-
-}
