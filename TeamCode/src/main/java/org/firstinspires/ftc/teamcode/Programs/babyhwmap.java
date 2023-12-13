@@ -1,14 +1,11 @@
-package org.firstinspires.ftc.teamcode;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+package org.firstinspires.ftc.teamcode.Programs;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.util.ElapsedTime;
-public class practicehwwmap extends HardwareMapUtil{
+import com.qualcomm.robotcore.hardware.Servo;
+
+public class babyhwmap extends HardwareMapUtil {
     HardwareMap hwmap = null;
 
     public DcMotor leftfrontDrive = null;
@@ -19,10 +16,10 @@ public class practicehwwmap extends HardwareMapUtil{
 
     public DcMotor rightbackDrive = null;
 
-    public DcMotor linearActuator = null;
-
-
-    public CRServo theServo = null;
+    public DcMotor armMotorOne = null;
+    public DcMotor armMotorTwo = null;
+    public CRServo armServo = null;
+    public Servo posServo = null;
 
 
     public void init(HardwareMap ahwMap){
@@ -31,14 +28,20 @@ public class practicehwwmap extends HardwareMapUtil{
         rightfrontDrive = HardwareInitMotor("rfD", false);
         leftbackDrive = HardwareInitMotor("lbD", true);
         rightbackDrive = HardwareInitMotor("rbD", false);
-        linearActuator = HardwareInitMotor("lA", true);
-        theServo = hwMap.get(CRServo.class, "the");
+        armMotorOne = HardwareInitMotor("arm_1", true);
+        armMotorTwo = HardwareInitMotor("arm_2", true);
+        armServo = hwMap.get(CRServo.class, "servo");
+        posServo = hwMap.get(Servo.class, "posServo");
+
+        armServo.setDirection(DcMotorSimple.Direction.FORWARD);
 
         leftfrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightfrontDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         leftbackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightbackDrive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        linearActuator.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotorOne.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armMotorTwo.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
 
 
