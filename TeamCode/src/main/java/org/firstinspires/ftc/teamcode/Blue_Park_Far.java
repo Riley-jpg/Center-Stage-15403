@@ -10,8 +10,11 @@ public class Blue_Park_Far extends Auto_Util {
         initAuto();
 
         waitForStart();
-        encoderDrive(DRIVE_SPEED,8,8,10,0);
-        encoderStrafe(STRAFE_SPEED,-16,-16,10,0);
+        encoderDrive(DRIVE_SPEED,-2.5,-2.5,10,0);
+        encoderStrafe(STRAFE_SPEED,18,18,10,0);
+        encoderDrive(DRIVE_SPEED,-32.5,-32.5,10,0);
+        encoderStrafe(STRAFE_SPEED,56,56,10,0);
+        encoderDrive(DRIVE_SPEED,1, 1,10,0);
 
     }
 }

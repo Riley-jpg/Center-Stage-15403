@@ -74,8 +74,8 @@ public abstract class Auto_Util extends LinearOpMode {
     static final double DRIVE_GEAR_REDUCTION = 0.75;     // This is < 1.0 if geared UP
     static final double WHEEL_DIAMETER_INCHES = 4.0;     // For figuring circumference
     static final double ENCODER_COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) / (WHEEL_DIAMETER_INCHES * 3.14159);
-    static final double DRIVE_SPEED = 0.01;
-    static final double STRAFE_SPEED = 0.01;
+    static final double DRIVE_SPEED = 0.3;
+    static final double STRAFE_SPEED = 0.3;
     static final double LIFT_SPEED = 0.7;
 
     //Vision Colors

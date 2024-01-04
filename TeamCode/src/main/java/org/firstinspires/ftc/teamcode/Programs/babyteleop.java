@@ -22,10 +22,18 @@ public class babyteleop extends LinearOpMode {
     static double rbPower;
     static double rfPower;
     static double slowamount ;
-    static double open = .3;
-    static double closed = .5;
+    static double open = .77;
+    static double closed = .4;
 
     private boolean changed1 = false;
+    private boolean changed3 = false;
+    private boolean changed7 = false;
+
+    private boolean changed8 = false;
+
+    private boolean changed9 = false;
+    public double intakePower = 0.5;
+
 
     public void runOpMode(){
         robot.init(hardwareMap);
@@ -53,7 +61,10 @@ public class babyteleop extends LinearOpMode {
             robot.rightfrontDrive.setPower(rfPower);
             robot.rightbackDrive.setPower(rbPower);
 
+            //intake drive
+            robot.Intake.setPower(intakePower);
 
+            //slow mode
             if (gamepad1.right_bumper){
                 slowamount = 0.5;}
             else if (gamepad1.left_bumper) {
@@ -61,23 +72,80 @@ public class babyteleop extends LinearOpMode {
             else{
                 slowamount = 1;}
 
-            robot.armMotorTwo.setPower(gamepad2.left_stick_y);
-            robot.armMotorOne.setPower(-gamepad2.right_stick_y*.5);
+            if(gamepad2.right_bumper){
+                robot.armMotorOne.setPower(-gamepad2.right_stick_y*.4 - .15);
+            } else{
+                robot.armMotorOne.setPower(-gamepad2.right_stick_y*.4);
+            }
+            if(gamepad2.left_bumper) {
+                robot.armMotorTwo.setPower(gamepad2.left_stick_y*.7 - .08);
+            }else{
+                robot.armMotorTwo.setPower(gamepad2.left_stick_y*.7);
+            }
 
 
 
             if(gamepad2.a){
-                robot.armServo.setPower(5);
+
+                robot.Intake.setPower(1);
             } else if(gamepad2.b){
-                robot.armServo.setPower(-5);
+                robot.Intake.setPower(-1);
             } else{
+                robot.Intake.setPower(0);
+            }
+            if (gamepad1.a && gamepad1.b){
+                robot.intakeServo.setPosition(open);
+            }else{
+                robot.intakeServo.setPosition(closed);
+            }
+
+            //FIXXXXXX or check 
+            if(gamepad1.x && !changed9){
+                resetRuntime();
+                if(runtime.seconds() > 0.8) {
+                    robot.armServo.setPower(1);
+                }
+                changed9 = true;
+            } else if(!gamepad1.x){
+                changed9 = false;
                 robot.armServo.setPower(0);
             }
-            if(gamepad2.x){
-                robot.posServo.setPosition(open);
-            } else if(gamepad2.y){
-                robot.posServo.setPosition(closed);
-            }}
+
+
+
+            if(gamepad1.dpad_up && !changed3) {//speed limiter toggle
+                if(intakePower == 0.5){
+                    intakePower = -1;
+                }
+                else{
+                    intakePower = 0.5;
+                }
+                changed3 = true;
+            } else if(!gamepad1.dpad_up){changed3 = false;}
+
+            if(gamepad1.dpad_right && !changed7) { //CHEETAH toggle
+                if(intakePower == -1){
+                    intakePower = 0.5;
+                }
+                else{
+                    intakePower = -1;
+                }
+                changed7 = true;
+            } else if(!gamepad1.dpad_right){changed7 = false;}
+
+            if(gamepad1.dpad_down && !changed8) { //CHEETAH toggle
+                double save = intakePower;
+                if(intakePower == -1 || intakePower == 0.5 ){
+                    intakePower = 0;
+                }
+                else{
+                    intakePower = save;
+                }
+                changed8 = true;
+            } else if(!gamepad1.dpad_down){changed8 = false;}
+
+
+        }
            /* if(gamepad1.a){
                 robot.armMotorOne.setPower(1);
             } else if(gamepad1.b){

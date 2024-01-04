@@ -10,7 +10,8 @@ public class Red_Park_Close extends Auto_Util {
         initAuto();
 
         waitForStart();
-        encoderStrafe(STRAFE_SPEED,8,8,10,0);
+        encoderStrafe(STRAFE_SPEED,-37,-37,10,0);
+        encoderStrafe(1,7,7,10,0);
 
     }
 }
